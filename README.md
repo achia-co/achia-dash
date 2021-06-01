@@ -1,3 +1,5 @@
+Version 0.1
+
 ![Image of achia.co](https://github.com/achia-co/achia-dash/blob/main/img/achia.png)
 
 # achia-dash
