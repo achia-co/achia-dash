@@ -1,11 +1,23 @@
-MACHINE_ID: 165a660
-TOKEN: Token 9496e7e1d7211e8d20f9e854182405dae28d72d7
+
+# This can be found on dash.achia.co as instructed on github
+MACHINE_ID: xxxxxxx
+TOKEN: Token xxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Put in your plotting logs folder to be analyse
+# If you are using GUI, it should be ~/.chia/mainnet/log
+# If you are using Swar's Plotting Manager or plotman, check their own YAML files
+# Or if you know where is it, put it in
+
+log:
+  folder_path: C:\Chia\Logs\Plotter
+
+
+##Put in the configuration of you plotting, if you set correctly the paths of the plotting including temporary_directory and destination_directory, it will put in the name of plot jobs
+
 jobs:
-- destination_directory: O:\
+- destination_directory: D:\
   name: crucial
   temporary_directory: C:\TEMP CHIA\
 - destination_directory: O:\
   name: firecuda
   temporary_directory: K:\
-log:
-  folder_path: C:\Chia\Logs\Plotter
