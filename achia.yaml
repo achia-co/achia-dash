@@ -1,10 +1,5 @@
-MACHINE_ID: xxxxxxx
-TOKEN: Token xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-log:
-  folder_path: C:\Chia\Logs\Plotter
-
-
+MACHINE_ID: 165a660
+TOKEN: Token 9496e7e1d7211e8d20f9e854182405dae28d72d7
 jobs:
 - destination_directory: O:\
   name: crucial
@@ -12,3 +7,5 @@ jobs:
 - destination_directory: O:\
   name: firecuda
   temporary_directory: K:\TEMP CHIA\
+log:
+  folder_path: C:\Chia\Logs\Plotter

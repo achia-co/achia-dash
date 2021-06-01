@@ -4,7 +4,6 @@ import os
 import psutil
 import re
 
-from plot_lib.library.utilities.instrumentation import increment_plots_completed
 from plot_lib.library.utilities.print import pretty_print_time
 
 

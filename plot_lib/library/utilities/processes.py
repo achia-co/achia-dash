@@ -9,7 +9,6 @@ from copy import deepcopy
 from datetime import datetime
 
 from plot_lib.library.utilities.objects import Work
-from plot_lib.library.utilities.instrumentation import set_plots_running
 
 
 def _contains_in_list(string, lst, case_insensitive=False):
