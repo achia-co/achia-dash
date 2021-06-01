@@ -6,6 +6,6 @@ jobs:
   temporary_directory: C:\TEMP CHIA\
 - destination_directory: O:\
   name: firecuda
-  temporary_directory: K:\TEMP CHIA\
+  temporary_directory: K:\
 log:
   folder_path: C:\Chia\Logs\Plotter
