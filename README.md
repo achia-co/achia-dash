@@ -4,21 +4,21 @@
 A python code to upload Chia blockchain and 's plot manager statistics to achia.co - a CHIA pool for every one, to get the plot status, we forked [Swar-Chia-Plot-Manager's](https://github.com/swar/Swar-Chia-Plot-Manager) library into our library, there no need to install Swar-Chia-Plot-Manager to use this client code to push to ACHIA dashboard
 
 
-### Using The Command Line:
+### Requirements
+
+You need [Microsoft Visual C++ Redistributable for Visual Studio](https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0)
+
  
 #### First you download the code and extract to a folder (e.g C:/achia-dash/achia-dash-main/ ) then we open CMD
-```bash
 
+```bash
 cd to/your/achia-dash-main/path
 # (Example: cd C:/achia-dash/achia-dash-main/)
-
 ```
 #### Install required packages
+
 ```bash
-# For windows
 python -m pip install -r requirements.txt
-# For linux
-python -m pip install -r requirements-linux.txt
 ```
 
 #### You need to modify the achia.yaml in the same folder to suit your configuration
@@ -28,14 +28,15 @@ Please use a note editor to edit achia.yaml
 ```
 
 #### Then you just start the program and follow the instructions
+
 ```bash
 python run.py
 ```
 
 #### To stop
+
 ```bash
 Please Ctrl+C multiple times in the CMD line
-
 ```
 
 ### WARNING 
