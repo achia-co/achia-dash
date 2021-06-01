@@ -1,0 +1,115 @@
+![Image of achia.co](https://github.com/achia-co/achia-dash/blob/main/img/achia.png)
+
+# achia-dash
+A python code to upload Chia blockchain and 's plot manager statistics to achia.co - a CHIA pool for every one, to get the plot status, we forked [Swar-Chia-Plot-Manager's](https://github.com/swar/Swar-Chia-Plot-Manager) library into our library, there no need to install Swar-Chia-Plot-Manager to use this client code to push to ACHIA dashboard
+
+
+### Using The Command Line:
+ 
+#### First you download the code and extract to a folder (e.g C:/achia-dash/achia-dash-main/ ) then we open CMD
+```bash
+
+cd to/your/achia-dash-main/path
+# (Example: cd C:/achia-dash/achia-dash-main/)
+
+```
+#### Install required packages
+```bash
+# For windows
+python -m pip install -r requirements.txt
+# For linux
+python -m pip install -r requirements-linux.txt
+```
+
+#### You need to modify the achia.yaml in the same folder to suit your configuration
+
+```bash
+Please use a note editor to edit achia.yaml
+```
+
+#### Then you just start the program and follow the instructions
+```bash
+python run.py
+```
+
+#### To stop
+```bash
+Please Ctrl+C multiple times in the CMD line
+
+```
+
+### WARNING 
+**Important Note**: This script will just push the data from Chia and 's plot manager to achia, no sensitive information (e.g mnemonic keys, etc) is pushed to the server. Please review the code before using if you can. At achia.co, we aim to be a transparent and safe pool for everyone to join.
+
+An example data being pushed to the server is shown below
+
+```bash
+
+chia_report =
+{'farm_stat': {'farmer_running': True,
+  'amounts': {},
+  'plot_number': 219,
+  'plots_space_string': '21.677 TiB',
+  'network_space_string': '14101.122 PiB',
+  'estimated_time_to_win_in_minutes': 199833,
+  'farmed_amount': 0,
+  'farmer_reward_amount': 0,
+  'fee_amount': 0,
+  'last_height_farmed': 0,
+  'pool_reward_amount': 0},
+ 'blockchain_state': {'difficulty': 932,
+  'genesis_challenge_initialized': True,
+  'mempool_size': 51,
+  'space': 0,
+  'sub_slot_iters': 116391936,
+  'sync': {'sync_mode': False,
+   'sync_progress_height': 0,
+   'sync_tip_height': 0,
+   'synced': True}},
+ 'average_block_time': 18,
+ 'wallet_summary': {'wallet': [],
+  'address_prefix': 'xch',
+  'height_info': 354437,
+  'sync_status': True,
+  'wallet_ballances': [{'wallet_id': 1,
+    'name': 'Chia Wallet',
+    'type': 0,
+    'balance': {'confirmed_wallet_balance': 1900000000000,
+     'max_send_amount': 1900000000000,
+     'pending_change': 0,
+     'pending_coin_removal_count': 0,
+     'spendable_balance': 1900000000000,
+     'unconfirmed_wallet_balance': 1900000000000,
+     'unspent_coin_count': 1,
+     'wallet_id': 1}}]}}
+
+
+plot_report =
+{'Plot Jobs': [{'num': '1',
+   'job': 'crucial',
+   'k': '32',
+   'plot_id': '9cb1cbc',
+   'pid': '9208',
+   'start': '2021-05-29 20:10:17',
+   'elapsed_time': '05:31:07',
+   'phase': '3',
+   'phase_times': '03:23 / 01:19',
+   'progress': '62.91%',
+   'temp_size': '201 GiB'},
+],
+ 'drive_info': [{'type': 't/-',
+   'drive': 'C:',
+   'used': '0.40TiB',
+   'total': '0.45TiB',
+   'temp': '1',
+   'dest': '',
+   'percent': '88.9%'},
+],
+ 'Plot_Manager_Status': 'Running',
+ 'CPU Usage': '57.9%',
+ 'RAM Usage': '22.14/31.93GiB',
+ 'Plots Completed Yesterday': 0,
+ 'Plots Completed Today': 0}
+```
+
+#### 
