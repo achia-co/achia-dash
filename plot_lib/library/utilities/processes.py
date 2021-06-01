@@ -252,7 +252,6 @@ def get_running_plots(jobs, running_work):
         work.k_size = k_size
         running_work[work.pid] = work
     logging.debug(f'Finished finding running plots')
-
     return jobs, running_work
 
 

@@ -42,7 +42,6 @@ def load_jobs(config_jobs):
     for info in config_jobs:
         job = deepcopy(Job())
         job.total_running = 0
-
         job.name = info['name']
         if job.name in checked_job_names:
             raise InvalidConfigurationSetting(f'Found the same job name for multiple jobs. Job names should be unique. '
@@ -60,7 +59,6 @@ def load_jobs(config_jobs):
         job.temporary_directory = temporary_directory
         job.destination_directory = info['destination_directory']
         jobs.append(job)
-
     return jobs
 
 
