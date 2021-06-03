@@ -27,6 +27,7 @@ logger.info("Starting achia service node....")
 
 
 
+
 logging.debug('Start of program')
 
 def get_config():
@@ -65,31 +66,31 @@ from plot_lib.plotman import plot_manager
 from chia_lib.chia_export import chia_report
 
 def run():
-
     pm = plot_manager()
     plot_report_intance = pm.get_info_achia()
     chia_report_intance = chia_report()        
-    r_plot = requests.post(post_plot_url, json=json.dumps(plot_report_intance), headers=headers)
-    r_chia = requests.post(post_stat_url, json=json.dumps(chia_report_intance), headers=headers)
+    if chia_report_intance.get('error',None) is not None:
+        logging.error("Getting chia blockchain status has error:")
+        print(chia_report_intance['error'])
+        
+    else:
+        r_chia = requests.post(post_stat_url, json=json.dumps(chia_report_intance), headers=headers)
+        if r_chia.status_code == 200:
+            logging.info("Sending chia block chain status -- Data was sent successfully")
+        else:
+            logging.error("Sending chia block chain status -- Server replied with error:")
+            print(r_chia.content)
     
-
-    if r_chia.status_code == 200:
-        logging.info("Sending chia block chain status -- Data was sent successfully")
-    else:
-          logging.error("Sending chia block chain status -- Server replied with error:")
-          print(r_chia.content)
-          if chia_report_intance.get('error',None) is not None:
-              logging.error("Getting chia blockchain status has error:")
-              print(chia_report_intance['error'])
-
-    if r_plot.status_code == 200:
-        logging.info("Sending plotting status -- Data was sent successfully")
-    else:
-          logging.error("Sending plotting status -- Server replied with error:")
-          print(r_plot.content)
-          if plot_report_intance.get('error',None) is not None:
-              logging.error("Getting plotting status has error:")
-              print(plot_report_intance['error'])
+    if plot_report_intance.get('error',None) is not None:
+        logging.error("Getting plotting status has error:")
+        print(plot_report_intance['error'])
+    else:  
+        r_plot = requests.post(post_plot_url, json=json.dumps(plot_report_intance), headers=headers)
+        if r_plot.status_code == 200:
+            logging.info("Sending plotting status -- Data was sent successfully")
+        else:
+            logging.error("Sending plotting status -- Server replied with error:")
+            print(r_plot.content)        
     
     return {"plot_report": plot_report_intance, "chia_report":chia_report_intance, 'r_plot': r_plot, "r_chia":r_chia}
 
