@@ -2,18 +2,15 @@ Version 0.1
 
 ![Image of achia.co](https://github.com/achia-co/achia-dash/blob/main/img/achia.png)
 
-# achia-dash
-A python code to upload Chia blockchain, plotting status and computer statistics to achia.co - a CHIA pool for every one.
+# ACHIA - DASH
+A python code to upload Chia blockchain stats, plotting stats and computer stats to achia.co dashboard so you can monitor you rig everywhere you want. This software can be used in concurrently with any plotting manager including the GUI.
 
-
-### EXECUTABLE FILE - This is created for who have trouble using the source code, if you are experienced, please use the steps below:
-
-
+### EXECUTABLE FILE - This is created for who have trouble using the source code
 
 https://github.com/achia-co/achia-dash/releases
 
 
-
+### If you want to use the open source code, please use the steps below:
 
 ### Requirements
 
