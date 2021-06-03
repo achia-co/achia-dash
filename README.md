@@ -1,23 +1,22 @@
+Version 0.1
+
 ![Image of achia.co](https://github.com/achia-co/achia-dash/blob/main/img/achia.png)
 
-# achia-dash
-A python code to upload Chia blockchain, plotting status and computer statistics to achia.co - a CHIA pool for every one.
+# ACHIA - DASH
+A python code to upload Chia blockchain stats, plotting stats and computer stats to achia.co dashboard so you can monitor you rig everywhere you want. This software can be used in concurrently with any plotting manager including the GUI.
+
+### EXECUTABLE FILE - This is created for who have trouble using the source code
+
+https://github.com/achia-co/achia-dash/releases
 
 
-### EXECUTABLE FILE - This is created for who have trouble using the source code, if you are experienced, please use the steps below:
-
-
-
-https://github.com/achia-co/achia-dash/releases/download/Windows/achia-dash.v0.1.zip
-
-
-
+### If you want to use the open source code, please use the steps below:
 
 ### Requirements
 
 You will need Python 3.6 -> 3.8 
 
-You will need Microsoft Visual C++ Redistributable for Visual Studio - https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0
+You will need Microsoft Visual C++ Redistributable for Visual Studio 
 
 [x86: vc_redist.x86.exe](https://aka.ms/vs/16/release/vc_redist.x86.exe)
 

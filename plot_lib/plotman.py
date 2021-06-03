@@ -57,11 +57,15 @@ class plot_manager:
     def get_info_achia(self):
         summary={}
         try:
+         
             log_directory, monitored_drives = config.get_config_info()
             summary['drive_info'] = list_disk_usage(monitored_drives)
+   
             analysis = {'files': {}}
             analysis = analyze_log_dates(log_directory=log_directory, analysis=analysis)
+
             running_work = get_running_plots()
+
             check_log_progress(running_work)
             job_data = plot_print.get_job_data(running_work)
             job_data_print = plot_print.pretty_print_job_data(job_data)

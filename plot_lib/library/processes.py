@@ -79,8 +79,8 @@ def get_plot_k_size(commands):
 
 def get_plot_directories(commands):
     flag = 0
-    temporary_index = None
-    destination_index = None
+    temporary_directory = None
+    destination_directory = None
     temporary2_directory = None
     try:
         temporary_index = commands.index('-t') + 1
@@ -94,7 +94,7 @@ def get_plot_directories(commands):
                  if '-t' in item:
                      temporary_directory = item[2:]
                  if '-d' in item:
-                     destination_index = item[2:]
+                     destination_directory = item[2:]
     else:
         temporary_directory = commands[temporary_index]
         destination_directory = commands[destination_index]
@@ -223,10 +223,11 @@ def get_running_plots():
         plot_id = None
         if log_file_path:
             plot_id = get_plot_id(file_path=log_file_path)
-        temp_file_size = get_temp_size(plot_id=plot_id, temporary_directories={'D:/','K:/'})
+        
         k_size = get_plot_k_size(commands=commands)
         work = deepcopy(Work())
         work.temporary_drive, work.temporary2_drive, work.destination_drive = get_plot_drives(commands=commands)
+        temp_file_size = get_temp_size(plot_id=plot_id, temporary_directories={work.temporary_drive})
         work.temporary_directory, work.temporary2_directory, work.destination_directory = get_plot_directories(commands=commands)
         work.log_file = log_file_path
         work.datetime_start = datetime_start
