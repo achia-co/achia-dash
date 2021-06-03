@@ -46,7 +46,9 @@ import yaml
 import requests
         
 config = get_config()
-
+if(config['MACHINE_ID']=="xxxxxxx"):
+    input("You haven't changed the Machine ID or possibly the Token, please edit the achia.yaml file before use")
+    sys.exit()
 post_plot_url = 'https://dash.achia.co/machines/' + config['MACHINE_ID'] + '/receive_plotsdraw_data/'
 post_stat_url = 'https://dash.achia.co/machines/' + config['MACHINE_ID'] + '/receive_data/'
 
