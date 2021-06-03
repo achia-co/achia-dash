@@ -16,7 +16,7 @@ https://github.com/achia-co/achia-dash/releases
 
 You will need Python 3.6 -> 3.8 
 
-You will need Microsoft Visual C++ Redistributable for Visual Studio - https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0
+You will need Microsoft Visual C++ Redistributable for Visual Studio 
 
 [x86: vc_redist.x86.exe](https://aka.ms/vs/16/release/vc_redist.x86.exe)
 
