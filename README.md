@@ -10,7 +10,7 @@ A python code to upload Chia blockchain, plotting status and computer statistics
 
 
 
-https://github.com/achia-co/achia-dash/releases/download/Windows/achia-dash.v0.1.1zip
+https://github.com/achia-co/achia-dash/releases
 
 
 
