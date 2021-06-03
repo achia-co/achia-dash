@@ -4,11 +4,8 @@ import os
 import psutil
 import re
 
-from plot_lib.library.utilities.print import pretty_print_time
+from plot_lib.library.print import pretty_print_time
 
-
-def get_log_file_name(log_directory, job, datetime):
-    return os.path.join(log_directory, f'{job.name}_{str(datetime).replace(" ", "_").replace(":", "_").replace(".", "_")}.log')
 
 
 def _analyze_log_end_date(contents):
@@ -147,7 +144,7 @@ def get_progress(line_count):
     return progress
 
 
-def check_log_progress(jobs, running_work):
+def check_log_progress(running_work):
     for pid, work in list(running_work.items()):
         logging.debug(f'Checking log progress for PID: {pid}')
         if not work.log_file:
@@ -168,21 +165,4 @@ def check_log_progress(jobs, running_work):
         work.phase_dates = phase_dates
         work.current_phase = current_phase
         work.progress = f'{progress:.2f}%'
-
-        if psutil.pid_exists(pid) and 'renamed final file from ' not in data.lower():
-            logging.debug(f'PID still alive: {pid}')
-            continue
-
-        logging.debug(f'PID no longer alive: {pid}')
-        for job in jobs:
-            if not job or not work or not work.job:
-                continue
-            if job.name != work.job.name:
-                continue
-            logging.debug(f'Removing PID {pid} from job: {job.name}')
-            if pid in job.running_work:
-                job.running_work.remove(pid)
-            job.total_running -= 1
-            job.total_completed += 1
-            break
-        del running_work[pid]
+        # del running_work[pid]

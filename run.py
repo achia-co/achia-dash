@@ -31,16 +31,13 @@ logging.debug('Start of program')
 
 def get_config():
     file_name = 'achia.yaml'
+    config = {} 
     try:
         f = open(file_name, 'r')
         config = yaml.load(stream=f, Loader=yaml.Loader)
         f.close() 
     except:
-        config = {}   
-         
-
-    with open(file_name, 'w') as file:
-        yaml.dump(config, file)
+        pass
     return config
 
 
@@ -61,55 +58,46 @@ headers = {'Authorization' : config['TOKEN'],'Content-type': 'application/json',
 
 
 # sys.path.append(config['swar_plot_manager_path'])
-from plot_lib.plotman import plot_manager
+from plot_lib.plotman import plot_manager 
 
 from chia_lib.chia_export import chia_report
 
 def run():
 
     pm = plot_manager()
-    pm.yaml_file = 'achia.yaml'
     plot_report_intance = pm.get_info_achia()
     chia_report_intance = chia_report()        
     r_plot = requests.post(post_plot_url, json=json.dumps(plot_report_intance), headers=headers)
     r_chia = requests.post(post_stat_url, json=json.dumps(chia_report_intance), headers=headers)
     
 
-    
-
     if r_chia.status_code == 200:
         logging.info("Sending chia block chain status -- Data was sent successfully")
     else:
-         logging.error("Sending chia block chain status -- Server replied with error:")
-         print(r_chia.content)
-         if chia_report_intance['error'] is not None:
-             logging.error("Getting chia blockchain status has error:")
-             print(chia_report_intance['error'])
-            
-         
+          logging.error("Sending chia block chain status -- Server replied with error:")
+          print(r_chia.content)
+          if chia_report_intance.get('error',None) is not None:
+              logging.error("Getting chia blockchain status has error:")
+              print(chia_report_intance['error'])
+
     if r_plot.status_code == 200:
         logging.info("Sending plotting status -- Data was sent successfully")
     else:
-         logging.error("Sending plotting status -- Server replied with error:")
-         print(r_plot.content)
-         if plot_report_intance['error'] is not None:
-             logging.error("Getting plotting status has error:")
-             print(plot_report_intance['error'])
+          logging.error("Sending plotting status -- Server replied with error:")
+          print(r_plot.content)
+          if plot_report_intance.get('error',None) is not None:
+              logging.error("Getting plotting status has error:")
+              print(plot_report_intance['error'])
     
     return {"plot_report": plot_report_intance, "chia_report":chia_report_intance, 'r_plot': r_plot, "r_chia":r_chia}
 
-
 async def worker():
     logger.info('Start worker')
-
     while True:
         run()
         await asyncio.sleep(60)
-        # if not r_plot:
-        #     await asyncio.sleep(100)
         continue
         
-
 
 def main():
     asyncio.ensure_future(worker())
@@ -125,6 +113,7 @@ def main():
         loop.close()
 
 if __name__ == '__main__':
+    input("Press enter to continue...")
     run_summary = run()            
     main()
 

@@ -3,12 +3,35 @@ import os
 import platform
 import psutil
 import re
-import subprocess
 
 from copy import deepcopy
 from datetime import datetime
 
-from plot_lib.library.utilities.objects import Work
+class Work:
+    work_id = None
+    job = None
+    pid = None
+    plot_id = None
+    log_file = None
+
+    temporary_drive = None
+    temporary2_drive = None
+    destination_drive = None
+
+    current_phase = 1
+
+    datetime_start = None
+    datetime_end = None
+
+    phase_times = {}
+    total_run_time = None
+
+    completed = False
+
+    progress = 0
+    temp_file_size = 0
+    k_size = None
+
 
 
 def _contains_in_list(string, lst, case_insensitive=False):
@@ -55,66 +78,35 @@ def get_plot_k_size(commands):
 
 
 def get_plot_directories(commands):
+    flag = 0
+    temporary_index = None
+    destination_index = None
+    temporary2_directory = None
     try:
         temporary_index = commands.index('-t') + 1
         destination_index = commands.index('-d') + 1
+        flag = 1
     except ValueError:
-        return None, None, None
-    try:
-        temporary2_index = commands.index('-2') + 1
-    except ValueError:
-        temporary2_index = None
-    temporary_directory = commands[temporary_index]
-    destination_directory = commands[destination_index]
-    temporary2_directory = None
-    if temporary2_index:
-        temporary2_directory = commands[temporary2_index]
+        pass
+    
+    if flag == 0:
+        for item in commands:
+                 if '-t' in item:
+                     temporary_directory = item[2:]
+                 if '-d' in item:
+                     destination_index = item[2:]
+    else:
+        temporary_directory = commands[temporary_index]
+        destination_directory = commands[destination_index]
+    # try:
+    #     temporary2_index = commands.index('-2') + 1
+    # except ValueError:
+    #     temporary2_index = None
+    # if temporary2_index:
+    #     temporary2_directory = commands[temporary2_index]
     return temporary_directory, temporary2_directory, destination_directory
 
 
-def get_plot_drives(commands, drives=None):
-    if not drives:
-        drives = get_system_drives()
-    temporary_directory, temporary2_directory, destination_directory = get_plot_directories(commands=commands)
-    temporary_drive = identify_drive(file_path=temporary_directory, drives=drives)
-    destination_drive = identify_drive(file_path=destination_directory, drives=drives)
-    temporary2_drive = None
-    if temporary2_directory:
-        temporary2_drive = identify_drive(file_path=temporary2_directory, drives=drives)
-    return temporary_drive, temporary2_drive, destination_drive
-
-
-def get_chia_drives():
-    drive_stats = {'temp': {}, 'temp2': {}, 'dest': {}}
-    chia_executable_name = get_chia_executable_name()
-    for process in psutil.process_iter():
-        try:
-            if chia_executable_name not in process.name() and 'python' not in process.name().lower():
-                continue
-        except (psutil.AccessDenied, psutil.NoSuchProcess):
-            continue
-        try:
-            if 'plots' not in process.cmdline() or 'create' not in process.cmdline():
-                continue
-        except (psutil.ZombieProcess, psutil.NoSuchProcess):
-            continue
-        commands = process.cmdline()
-        temporary_drive, temporary2_drive, destination_drive = get_plot_drives(commands=commands)
-        if not temporary_drive and not destination_drive:
-            continue
-
-        if temporary_drive not in drive_stats['temp']:
-            drive_stats['temp'][temporary_drive] = 0
-        drive_stats['temp'][temporary_drive] += 1
-        if destination_drive not in drive_stats['dest']:
-            drive_stats['dest'][destination_drive] = 0
-        drive_stats['dest'][destination_drive] += 1
-        if temporary2_drive:
-            if temporary2_drive not in drive_stats['temp2']:
-                drive_stats['temp2'][temporary2_drive] = 0
-            drive_stats['temp2'][temporary2_drive] += 1
-
-    return drive_stats
 
 
 def get_system_drives():
@@ -143,12 +135,21 @@ def get_plot_id(file_path=None, contents=None):
         f = open(file_path, 'r')
         contents = f.read()
         f.close()
-
     match = re.search(rf'^ID: (.*?)$', contents, flags=re.M)
     if match:
         return match.groups()[0]
     return None
 
+def get_plot_drives(commands, drives=None):
+    if not drives:
+        drives = get_system_drives()
+    temporary_directory, temporary2_directory, destination_directory = get_plot_directories(commands=commands)
+    temporary_drive = identify_drive(file_path=temporary_directory, drives=drives)
+    destination_drive = identify_drive(file_path=destination_directory, drives=drives)
+    temporary2_drive = None
+    if temporary2_directory:
+        temporary2_drive = identify_drive(file_path=temporary2_directory, drives=drives)
+    return temporary_drive, temporary2_drive, destination_drive
 
 def get_temp_size(plot_id, temporary_directories):
     if not plot_id:
@@ -168,8 +169,9 @@ def get_temp_size(plot_id, temporary_directories):
     return temp_size
 
 
-def get_running_plots(jobs, running_work):
+def get_running_plots():
     chia_processes = []
+    running_work = {}
     logging.debug(f'Getting running plots')
     chia_executable_name = get_chia_executable_name()
     for process in psutil.process_iter():
@@ -188,9 +190,11 @@ def get_running_plots(jobs, running_work):
                 parent_commands = process.parent().cmdline()
                 if 'plots' in parent_commands and 'create' in parent_commands:
                     continue
+                  
             except (psutil.AccessDenied, psutil.ZombieProcess):
                 pass
         logging.debug(f'Found chia plotting process: {process.pid}')
+        # print(process.cmdline()) 
         datetime_start = datetime.fromtimestamp(process.create_time())
         chia_processes.append([datetime_start, process])
     chia_processes.sort(key=lambda x: (x[0]))
@@ -215,59 +219,24 @@ def get_running_plots(jobs, running_work):
             logging.debug(f'Failed to find log file: {process.pid}')
         except psutil.NoSuchProcess:
             continue
-
-        assumed_job = None
         logging.debug(f'Finding associated job')
-
-        temporary_directory, temporary2_directory, destination_directory = get_plot_directories(commands=commands)
-        for job in jobs:
-            if isinstance(job.temporary_directory, list) and temporary_directory not in job.temporary_directory:
-                continue
-            if not isinstance(job.temporary_directory, list) and temporary_directory != job.temporary_directory:
-                continue
-            logging.debug(f'Found job: {job.name}')
-            assumed_job = job
-            break
-
         plot_id = None
         if log_file_path:
             plot_id = get_plot_id(file_path=log_file_path)
-
         temp_file_size = get_temp_size(plot_id=plot_id, temporary_directories={'D:/','K:/'})
-
         k_size = get_plot_k_size(commands=commands)
         work = deepcopy(Work())
-        work.job = assumed_job
+        work.temporary_drive, work.temporary2_drive, work.destination_drive = get_plot_drives(commands=commands)
+        work.temporary_directory, work.temporary2_directory, work.destination_directory = get_plot_directories(commands=commands)
         work.log_file = log_file_path
         work.datetime_start = datetime_start
         work.pid = process.pid
         work.plot_id = plot_id
-        work.work_id = '?'
-        if assumed_job:
-            work.work_id = assumed_job.current_work_id
-            assumed_job.current_work_id += 1
-            assumed_job.total_running += 1
-            assumed_job.running_work = assumed_job.running_work + [process.pid]
+        work.work_id = str(work.temporary_drive) + ' to ' + work.destination_drive
         work.temp_file_size = temp_file_size
         work.k_size = k_size
         running_work[work.pid] = work
+        
     logging.debug(f'Finished finding running plots')
-    return jobs, running_work
+    return running_work
 
-
-def start_process(args, log_file):
-    kwargs = {}
-    if is_windows():
-        flags = 0
-        flags |= 0x00000008
-        kwargs = {
-            'creationflags': flags,
-        }
-    process = subprocess.Popen(
-        args=args,
-        stdout=log_file,
-        stderr=log_file,
-        shell=False,
-        **kwargs,
-    )
-    return process

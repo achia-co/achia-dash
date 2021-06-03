@@ -1,5 +1,5 @@
 aiohttp==3.7.4
-chia_blockchain==1.1.6
+chia_blockchain~=1.1.6
 nest_asyncio==1.5.1
 dateparser==1.0.0
 requests==2.25.1
@@ -7,5 +7,5 @@ psutil==5.8.0
 chia==2.3.1
 playsound==1.2.2
 pushover==0.5
-PyYAML==5.4.1
+PyYAML~=5.4.1
 

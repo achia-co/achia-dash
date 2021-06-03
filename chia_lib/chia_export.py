@@ -30,6 +30,7 @@ async def farmer_summary_achia(wallet_rpc_port: int,harvester_rpc_port: int, rpc
     
     try:   
         blockchain_state = await ff.get_blockchain_state(rpc_port)
+
     except Exception as e:
         blockchain_state =  {'error': e}   
 
@@ -88,62 +89,71 @@ async def wallet_summary_achia(wallet_rpc_port: int, fingerprint: int, extra_par
 
 
 def process_data_achia(payload):
-    # print (payload["farm_stat"])
+
     if payload["farm_stat"].get("error",None) is not None:
         print("Farmer is not running. Error:")
         print(payload["farm_stat"]["error"])
     else:
+        plots = None
         if payload["farm_stat"]['farmer_running']:
-            payload["farm_stat"]["plot_number"]=len(payload["farm_stat"]["plot"]["plots"])
-            total_plot_size = 0
-            plots = payload["farm_stat"]["plot"]
-            if plots is not None:
-                plot_number = len(payload["farm_stat"]["plot"]["plots"])
-                total_plot_size = sum(map(lambda x: x["file_size"], plots["plots"]))
-                plots_space_human_readable = total_plot_size / 1024 ** 3
-                if plots_space_human_readable >= 1024 ** 2:
-                    plots_space_human_readable = plots_space_human_readable / (1024 ** 2)
-                    plots_space_string = f"{plots_space_human_readable:.3f} PiB"
-                elif plots_space_human_readable >= 1024:
-                    plots_space_human_readable = plots_space_human_readable / 1024
-                    plots_space_string = f"{plots_space_human_readable:.3f} TiB"
-                else:
-                    plots_space_string = f"{plots_space_human_readable:.3f} GiB"
-            else:
-                plot_number = 0
-                plots_space_string = ("Unknown")
+            plot_number = 0
+            plots_space_string = ""
             
+            if payload["farm_stat"]["plot"] is not None:
+                payload["farm_stat"]["plot_number"]=len(payload["farm_stat"]["plot"]["plots"])
+                total_plot_size = 0
+                plots = payload["farm_stat"]["plot"]
+                if plots is not None:
+                    plot_number = len(payload["farm_stat"]["plot"]["plots"])
+                    total_plot_size = sum(map(lambda x: x["file_size"], plots["plots"]))
+                    plots_space_human_readable = total_plot_size / 1024 ** 3
+                    if plots_space_human_readable >= 1024 ** 2:
+                        plots_space_human_readable = plots_space_human_readable / (1024 ** 2)
+                        plots_space_string = f"{plots_space_human_readable:.3f} PiB"
+                    elif plots_space_human_readable >= 1024:
+                        plots_space_human_readable = plots_space_human_readable / 1024
+                        plots_space_string = f"{plots_space_human_readable:.3f} TiB"
+                    else:
+                        plots_space_string = f"{plots_space_human_readable:.3f} GiB"
+                else:
+                    plot_number = 0
+                    plots_space_string = ("Unknown")
+                
             payload["farm_stat"].pop('plot', None)
             payload["farm_stat"]["plot_number"] = plot_number
             payload["farm_stat"]["plots_space_string"] = plots_space_string
 
     
-    if payload.get("blockchain_state",None) is not None:
-        if payload["blockchain_state"].get("error",None) is not None:
-            print("Fullnode is not running. Error:")
-            print(payload["blockchain_state"]["error"])
-        else:
-            payload['blockchain_state'].pop('peak', None)
-            blockchain_state = payload["blockchain_state"]
-            if blockchain_state is not None:
-                network_space_human_readable = blockchain_state["space"] / 1024 ** 4
-                if network_space_human_readable >= 1024:
-                    network_space_human_readable = network_space_human_readable / 1024
-                    network_space_string = f"{network_space_human_readable:.3f} PiB"
-                else:
-                    network_space_string = f"{network_space_human_readable:.3f} TiB"
+        if payload.get("blockchain_state",None) is not None:
+            if payload["blockchain_state"].get("error",None) is not None:
+                print("Fullnode is not running. Error:")
+                print(payload["blockchain_state"]["error"])
             else:
-                network_space_string = "Unknown"
-            minutes = -1
-            if blockchain_state is not None and plots is not None:
-                proportion = total_plot_size / blockchain_state["space"] if blockchain_state["space"] else -1
-                minutes = int((payload["average_block_time"] / 60) / proportion) if proportion else -1
-            payload["blockchain_state"]["space"] = 0
-            if payload["farm_stat"].get("error",None) is not None:
-                if payload["farm_stat"]['farmer_running']:
-                    payload["farm_stat"]["network_space_string"] = network_space_string
-                    payload["farm_stat"]["estimated_time_to_win_in_minutes"] = minutes
-    
+                blockchain_state = payload["blockchain_state"]
+                if blockchain_state is not None:
+                    network_space_human_readable = blockchain_state["space"] / 1024 ** 4
+                    if network_space_human_readable >= 1024**2:
+                        network_space_human_readable = network_space_human_readable / 1024**2
+                        network_space_string = f"{network_space_human_readable:.3f} EiB"  
+                    elif network_space_human_readable >= 1024:
+                        network_space_human_readable = network_space_human_readable / 1024
+                        network_space_string = f"{network_space_human_readable:.3f} PiB"    
+                    else:
+                        network_space_string = f"{network_space_human_readable:.3f} TiB"
+                        
+                else:
+                    network_space_string = "Unknown"
+                minutes = -1
+                if blockchain_state is not None and plots is not None:
+                    proportion = total_plot_size / blockchain_state["space"] if blockchain_state["space"] else -1
+                    minutes = int((payload["average_block_time"] / 60) / proportion) if proportion else -1
+                payload["blockchain_state"]["space"] = 0
+                payload['blockchain_state'].pop('peak', None)
+                if payload["farm_stat"].get("error",None) is None:
+                    if payload["farm_stat"]['farmer_running']:
+                        payload["farm_stat"]["network_space_string"] = network_space_string
+                        payload["farm_stat"]["estimated_time_to_win_in_minutes"] = minutes
+
     return payload
 
 
