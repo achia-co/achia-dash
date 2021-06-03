@@ -3,13 +3,27 @@ Version 0.1
 ![Image of achia.co](https://github.com/achia-co/achia-dash/blob/main/img/achia.png)
 
 # achia-dash
-A python code to upload Chia blockchain and 's plot manager statistics to achia.co - a CHIA pool for every one, to get the plot status, we forked [Swar-Chia-Plot-Manager's](https://github.com/swar/Swar-Chia-Plot-Manager) library into our library, there no need to install Swar-Chia-Plot-Manager to use this client code to push to ACHIA dashboard
+A python code to upload Chia blockchain, plotting status and computer statistics to achia.co - a CHIA pool for every one.
+
+
+### EXECUTABLE FILE - This is created for who have trouble using the source code, if you are experienced, please use the steps below:
+
+
+
+https://github.com/achia-co/achia-dash/releases/download/Windows/achia-dash.v0.1.zip
+
+
 
 
 ### Requirements
 
-You need [Microsoft Visual C++ Redistributable for Visual Studio](https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0)
+You will need Python 3.6 -> 3.8 
 
+You will need Microsoft Visual C++ Redistributable for Visual Studio - https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0
+
+[x86: vc_redist.x86.exe](https://aka.ms/vs/16/release/vc_redist.x86.exe)
+
+[x64: vc_redist.x64.exe](https://aka.ms/vs/16/release/vc_redist.x64.exe)
  
 #### First you download the code and extract to a folder (e.g C:/achia-dash/achia-dash-main/ ) then we open CMD
 
@@ -116,3 +130,5 @@ plot_report =
 ```
 
 #### 
+Credit to: 
+[Swar-Chia-Plot-Manager's](https://github.com/swar/Swar-Chia-Plot-Manager)
