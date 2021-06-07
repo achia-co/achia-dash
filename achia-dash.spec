@@ -1,9 +1,16 @@
 # -*- mode: python ; coding: utf-8 -*-
+
+# -*- mode: python ; coding: utf-8 -*-
 import importlib
 import pathlib
 from PyInstaller.utils.hooks import collect_submodules, copy_metadata
 ROOT = pathlib.Path(importlib.import_module("chia").__file__).absolute().parent.parent
+import sys,os
+
+
 from pkg_resources import get_distribution
+
+
 block_cipher = None
 
 
@@ -34,9 +41,12 @@ datas.append((f"{ROOT}/chia/util/initial-config.yaml", "chia/util"))
 datas.append((f"{ROOT}/chia/wallet/puzzles/*.hex", "chia/wallet/puzzles"))
 datas.append((f"{ROOT}/chia/ssl/*", "chia/ssl"))
 datas.append((f"{ROOT}/mozilla-ca/*", "mozilla-ca"))
+datas.append(('img\\*','img'))
 datas.append(version_data)
 
-a = Analysis(['run.py'],
+specpath = os.path.dirname(os.path.abspath(SPEC))
+
+a = Analysis(['gui.py'],
              pathex=["run.py"],
              binaries=binaries,
              datas=datas,
@@ -48,23 +58,23 @@ a = Analysis(['run.py'],
              win_private_assemblies=False,
              cipher=block_cipher,
              noarchive=False)
-
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
+
+		  
 exe = EXE(pyz,
           a.scripts,
-          a.binaries,
-          a.zipfiles,
-          a.datas,
-          [],
           exclude_binaries=True,
-          name='run',
-          debug=False,
+          name='achia-dash',
+          debug=True,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True,
-		  icon='img\\logo.ico' )
+          upx_exclude=[],
+          runtime_tmpdir=None,
+          console=False 
+		  ,icon = os.path.join(specpath, 'img','logo.ico'))
+		  
 		  
 coll = COLLECT(exe,
                a.binaries,
@@ -73,6 +83,4 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='run')
-
-
+               name='achia-dash')
