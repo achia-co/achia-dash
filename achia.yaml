@@ -1,0 +1,12 @@
+# This can be found on dash.achia.co 
+
+MACHINE_ID: 8ef9668
+TOKEN: Token 0e4cd4f3f48050f869a2d28d115e4b3a01eb834f
+
+
+# Put in your plotting logs folder to be analyse
+# If you are using GUI, it should be ~/.chia/mainnet/log
+# If you are using Swar's Plotting Manager or plotman or any other plotting manager, check their own YAML files for the plot logs directory
+
+log_folder_path: C:\Users\minhn\Documents\Chia Logs
+
