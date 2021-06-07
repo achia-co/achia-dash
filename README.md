@@ -1,4 +1,4 @@
-Version 0.1.2
+Version 0.2
 
 ![Image of achia.co](https://github.com/achia-co/achia-dash/blob/main/img/achia.png)
 
@@ -7,7 +7,7 @@ A python code to upload Chia blockchain stats, plotting stats and computer stats
 
 ### EXECUTABLE FILE - This is created for who have trouble using the source code
 
-https://github.com/achia-co/achia-dash/releases
+The latest -> https://github.com/achia-co/achia-dash/releases/download/v0.2/achia-dash.v.0.2.7z
 
 
 ### If you want to use the open source code, please use the steps below:
