@@ -1,4 +1,4 @@
-Version 0.1
+Version 0.1.2
 
 ![Image of achia.co](https://github.com/achia-co/achia-dash/blob/main/img/achia.png)
 
