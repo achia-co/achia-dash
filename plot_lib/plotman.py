@@ -3,14 +3,15 @@ import psutil
 from datetime import datetime, timedelta
 from plot_lib.library.log import analyze_log_dates, check_log_progress
 from plot_lib.library.processes import  get_running_plots
-import plot_lib.library.configuration as config 
 import plot_lib.library.print as plot_print
-from plot_lib.library.processes  import  get_system_drives
 import os
 from psutil._common import bytes2human
 
+import logging
+logger = logging.getLogger(__name__)
 
-def list_disk_usage(monitored_drives):
+
+def list_disk_usage():
     disk_usage = []
     for part in psutil.disk_partitions(all=False):
             temp = {}
@@ -36,7 +37,7 @@ def list_disk_usage(monitored_drives):
 class plot_manager:
     def __init__(self):             
         plot_print.pretty_print_table = self._pretty_print_table
-
+        self.log_directory = ""
     
     def _pretty_print_table(self,rows):
         table_data = []
@@ -57,15 +58,16 @@ class plot_manager:
     def get_info_achia(self):
         summary={}
         try:
-         
-            log_directory, monitored_drives = config.get_config_info()
-            summary['drive_info'] = list_disk_usage(monitored_drives)
-   
+            summary['drive_info'] = list_disk_usage()
             analysis = {'files': {}}
-            analysis = analyze_log_dates(log_directory=log_directory, analysis=analysis)
+            analysis = analyze_log_dates(log_directory=self.log_directory, analysis=analysis)
 
+            if analysis.get("summary",None) is not None:
+                plots = 0
+                for key, value in analysis["summary"].items():
+                    plots += value
+                logger.info(f"Total plotting logs found in the folder: {plots}")    
             running_work = get_running_plots()
-
             check_log_progress(running_work)
             job_data = plot_print.get_job_data(running_work)
             job_data_print = plot_print.pretty_print_job_data(job_data)

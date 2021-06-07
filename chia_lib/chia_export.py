@@ -13,7 +13,8 @@ import asyncio
 import nest_asyncio
 nest_asyncio.apply()
 
-
+import logging
+logger = logging.getLogger(__name__)
 
 async def farmer_summary_achia(wallet_rpc_port: int,harvester_rpc_port: int, rpc_port: int, farmer_rpc_port: int) -> None:
     import chia.cmds.farm_funcs as ff
@@ -46,6 +47,7 @@ async def farmer_summary_achia(wallet_rpc_port: int,harvester_rpc_port: int, rpc
 
     return {"farm_stat" : {"farmer_running":farmer_running, "amounts": amounts,"plot": plots},
                 "blockchain_state": blockchain_state, "average_block_time" : int(average_block_time),   }
+
 
 
 
@@ -98,7 +100,6 @@ def process_data_achia(payload):
         if payload["farm_stat"]['farmer_running']:
             plot_number = 0
             plots_space_string = ""
-            
             if payload["farm_stat"]["plot"] is not None:
                 payload["farm_stat"]["plot_number"]=len(payload["farm_stat"]["plot"]["plots"])
                 total_plot_size = 0
@@ -336,6 +337,7 @@ def rearrange_json(importjason) -> dict():
 def chia_report():
     payload = asyncio.run(farmer_summary_achia(None,None,None,None))
     payload = process_data_achia(payload)
+    logger.debug(payload)
     temp = asyncio.run(wallet_summary_achia(None, None, {}))
     payload["wallet_summary"] = temp
     return rearrange_json(payload)

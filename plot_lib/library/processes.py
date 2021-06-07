@@ -7,6 +7,8 @@ import re
 from copy import deepcopy
 from datetime import datetime
 
+logger = logging.getLogger(__name__)
+
 class Work:
     work_id = None
     job = None
@@ -57,7 +59,7 @@ def get_manager_processes():
                 continue
             processes.append(process)
         except (psutil.NoSuchProcess, psutil.AccessDenied):
-            pass
+            continue
     return processes
 
 
@@ -172,7 +174,7 @@ def get_temp_size(plot_id, temporary_directories):
 def get_running_plots():
     chia_processes = []
     running_work = {}
-    logging.debug(f'Getting running plots')
+    logger.debug(f'Getting running plots')
     chia_executable_name = get_chia_executable_name()
     for process in psutil.process_iter():
         try:
@@ -193,14 +195,14 @@ def get_running_plots():
                   
             except (psutil.AccessDenied, psutil.ZombieProcess):
                 pass
-        logging.debug(f'Found chia plotting process: {process.pid}')
+        logger.debug(f'Found chia plotting process: {process.pid}')
         # print(process.cmdline()) 
         datetime_start = datetime.fromtimestamp(process.create_time())
         chia_processes.append([datetime_start, process])
     chia_processes.sort(key=lambda x: (x[0]))
 
     for datetime_start, process in chia_processes:
-        logging.debug(f'Finding log file for process: {process.pid}')
+        logger.debug(f'Finding log file for process: {process.pid}')
         log_file_path = None
         commands = []
         try:
@@ -213,13 +215,13 @@ def get_running_plots():
                 if file.path[-9:] == 'debug.log':
                     continue
                 log_file_path = file.path
-                logging.debug(f'Found log file: {log_file_path}')
+                logger.debug(f'Found log file: {log_file_path}')
                 break
         except (psutil.AccessDenied, RuntimeError):
-            logging.debug(f'Failed to find log file: {process.pid}')
+            logger.debug(f'Failed to find log file: {process.pid}')
         except psutil.NoSuchProcess:
             continue
-        logging.debug(f'Finding associated job')
+        logger.debug(f'Finding associated job')
         plot_id = None
         if log_file_path:
             plot_id = get_plot_id(file_path=log_file_path)
@@ -238,6 +240,6 @@ def get_running_plots():
         work.k_size = k_size
         running_work[work.pid] = work
         
-    logging.debug(f'Finished finding running plots')
+    logger.debug(f'Finished finding running plots')
     return running_work
 
